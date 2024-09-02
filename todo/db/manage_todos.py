@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, create_engine,Session, select
+from sqlmodel import SQLModel,text, create_engine,Session, select
 from todo.models.todo import *
 import os
 
@@ -26,7 +26,7 @@ def retrieve_all_todo() -> list[TodoResponse]:
 
     with Session(engine) as s:
         statement = select(Todo)
-        todos = [TodoResponse(content=t.content) for t in s.exec(statement)]
+        todos = [TodoResponse(content=t.content, completed=t.completed) for t in s.exec(statement)]
 
     return todos
 
@@ -36,7 +36,7 @@ def retrieve_todo(id:int) -> None|TodoResponse:
 
         todo = s.get(Todo, id)
 
-        return todo if todo is None else TodoResponse(content=t.content)
+        return todo if todo is None else TodoResponse(content=todo.content, completed=todo.completed)
 
 
 def delete_todo(id:int):
@@ -45,12 +45,14 @@ def delete_todo(id:int):
         if todo is None:
             raise Exception()
 
-        s.delete(todo)   
+        s.delete(todo)  
+        s.commit() 
 
 def delete_all_todo():
     with Session(engine) as s:
 
-        s.exec("TRUNCATE TABLE Todo")
+        s.exec( Todo.__table__.delete() )
+        #needed
         s.commit()
 
 def update_todo(id:int, update: UpdateTodo):
@@ -63,3 +65,5 @@ def update_todo(id:int, update: UpdateTodo):
         
         todo.completed = update.completed
         todo.content = update.content
+        s.add(todo)
+        s.commit()

@@ -53,9 +53,11 @@ async def update_todo(id:int, update: UpdateTodo) -> dict:
 
 #DELETE
 @route.delete("/")
-async def delete_all():
+async def delete_all() -> dict:
     manage_todos.delete_all_todo()
-
+    return {
+            "message" : "todos were cleared."
+        }
 
 @route.delete("/{id}")
 async def delete_todo(id:int):

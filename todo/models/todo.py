@@ -21,3 +21,4 @@ class UpdateTodo(BaseModel):
 
 class TodoResponse(BaseModel):
     content: str
+    completed: bool
