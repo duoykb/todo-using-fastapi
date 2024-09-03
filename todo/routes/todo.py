@@ -6,18 +6,12 @@ from todo.db import manage_todos
 route = APIRouter()
 
 
-def logger():
-    pass
-
-
 # POST
 @route.post("/")
 async def add_todo(new_todo: NewTodo) -> dict:
     manage_todos.add_todo(new_todo)
 
-    return {
-        "message": "todo was added."
-    }
+    return {"message": "todo was added."}
 
 
 # GET
@@ -48,18 +42,14 @@ async def update_todo(id: int, update: UpdateTodo) -> dict:
         raise HTTPException(status.HTTP_404_NOT_FOUND,
                             detail="todo not found.")
 
-    return {
-        "message": "todo was updated."
-    }
+    return {"message": "todo was updated."}
 
 
 # DELETE
 @route.delete("/")
 async def delete_all() -> dict:
     manage_todos.delete_all_todo()
-    return {
-        "message": "todos were cleared."
-    }
+    return {"message": "todos were cleared."}
 
 
 @route.delete("/{id}")
